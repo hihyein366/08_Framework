@@ -163,6 +163,7 @@ public class ParameterController {
 	
 	@PostMapping("test4")
 	public String paramTest4(/* @ModelAttribute */ MemberDTO inputMember) {
+							 // -> 커맨드 객체
 		
 		// lombok 테스트
 		MemberDTO mem = new MemberDTO();
