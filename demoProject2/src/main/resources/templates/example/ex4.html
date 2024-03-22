@@ -107,6 +107,8 @@
 
     <p th:text="${member} ?: _">회원 데이터 없어</p>
     <p th:text="${std} ?: _">학생 데이터 없어</p>
-
+    
+    <!-- html 파일 전체를 하나의 조각으로 취급 -->
+    <th:block th:replace="~{fragments/footer}"></th:block>
 </body>
 </html>
