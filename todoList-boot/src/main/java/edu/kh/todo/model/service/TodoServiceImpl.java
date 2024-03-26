@@ -24,6 +24,9 @@ import edu.kh.todo.model.mapper.TodoMapper;
 //---------------------------------------------------
 
 // 모든 종류의 예외 발생 시 rollback 수행
+/**
+ * 
+ */
 @Transactional(rollbackFor = Exception.class)
 @Service // 비즈니스 로직(데이터 가공, 트랜잭션 처리) 역할 명시
 		 // Bean 등록
@@ -110,6 +113,12 @@ public class TodoServiceImpl implements TodoService {
 	@Override
 	public int getCompleteCount() {
 		return mapper.getCompleteCount();
+	}
+
+	// 할 일 목록 조회
+	@Override
+	public List<Todo> selectList() {
+		return mapper.selectAll();
 	}
 	
 
