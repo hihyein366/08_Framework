@@ -3,9 +3,14 @@ package edu.kh.project.member.model.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.project.member.model.dto.Member;
 import edu.kh.project.member.model.mapper.MemberMapper;
+
+@Transactional // 해당 클래스 메서드 종료 시 까지 예외 발생 안하면 commit,
+			   // 중간에 예외(RuntimeException) 발생하면 rollback
+			   // (AOP 기반 기술)
 
 @Service // 비즈니스 로직처리 역할 + Bean 등록
 public class MemberServiceImpl implements MemberService {
@@ -48,6 +53,53 @@ public class MemberServiceImpl implements MemberService {
 		
 		return loginMember;
 	}
+	
+	
+	// 회원가입 서비스
+	@Override
+	public int signup(Member inputMember, String[] memberAddress) {
+		
+		// 주소가 입력되지 않으면
+		// inputMember.getMemberAddress() -> ",,"
+		// memberAddress -> [,,]
+		
+		// 주소가 입력된 경우
+		if(!inputMember.getMemberAddress().equals(",,")) {
+			
+			// String.join("구분자", 배열)
+			// -> 배열의 모든 요소 사이에 "구분자"를 추가하여
+			//	  하나의 문자열로 만드는 메서드
+			
+			// 구분자로 "^^^" 쓴 이유 : 상세주소에도 없는 특수문자 작성 위해
+			// -> 나중에 다시 3분할 할때 구분자로 이용할 예정
+			String address = String.join("^^^", memberAddress);
+			
+			// inputMember 주소로 합쳐진 주소를 세팅
+			inputMember.setMemberAddress(address);
+			
+		} else { // 주소 입력 X
+			
+			inputMember.setMemberAddress(null);
+		}
+		
+		// 비번 암호화하여 inputMember에 세팅
+		String encPw = bcrypt.encode(inputMember.getMemberPw());
+		inputMember.setMemberPw(encPw);
+		
+		// 회원 가입 매퍼 메서드 호출 
+		//	-> Mybatis에 의해서 자동으로 SQL 수행됨
+		// *(매퍼 메서드 호출 시 SQL에 사용할 파라미터는 1개만 전달 가능)*
+		return mapper.signup(inputMember);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 
 
