@@ -57,6 +57,7 @@ COMMIT;
 
 SELECT * FROM "MEMBER";
 
+DELETE FROM "MEMBER" m WHERE MEMBER_EMAIL = 'hi@hi.com';
 -- 로그인
 -- -> BCrypt 암호와 사용 중 DB에서 비번 비교 불가능 그래서 MEMBER_PW를 조회
 -- --> 이메일이 일치하는 회원 + 탈퇴 안한 회원 조건만 검색
@@ -67,7 +68,12 @@ FROM "MEMBER"
 WHERE MEMBER_EMAIL = ?
 AND MEMBER_DEL_FL = 'N'
 
-
+-- 이메일 중복 검사 (탈퇴 안한 회원 중 같은 이메일 있는지 조회)
+SELECT COUNT(*)
+FROM "MEMBER" 
+WHERE MEMBER_DEL_FL = 'N'
+AND MEMBER_EMAIL = 'member01*kh.or.kr'
+;
 
 
 

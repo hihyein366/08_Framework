@@ -100,26 +100,35 @@
         <label for="memberAddress">주소</label>
 
         <div class="signUp-input-area">
-          <input type="text" name="memberAddress" placeholder="우편번호" maxlength="6" id="sample6_postcode">                 
+          <input type="text" name="memberAddress" placeholder="우편번호" maxlength="6" id="postcode">                 
           
-                <button type="button" onclick="sample6_execDaumPostcode()">검색</button>
+                <button type="button" id="searchAddress">검색</button>
         </div>
 
         <div class="signUp-input-area">
-          <input type="text" name="memberAddress" placeholder="도로명/지번 주소" id="sample6_address">
+          <input type="text" name="memberAddress" placeholder="도로명/지번 주소" id="=address">
         </div>
 
         <div class="signUp-input-area">
-          <input type="text" name="memberAddress" placeholder="상세 주소" id="sample6_detailAddress">
+          <input type="text" name="memberAddress" placeholder="상세 주소" id="=detailAddress">
         </div>
 
         <button id="signUpBtn">가입하기</button>
+      </form>
+
     </section>
     
   </main>
 
-  <!-- 푸터 추가 -->
+  <!-- footer 추가 -->
   <th:block th:replace="~{common/footer}"></th:block>
 
+  <!-- script 태그 여러 개로 나뉘어 있어도 HTML 렌더링 시 큰 한장의 JS 파일로 변환된다 생각
+      (단, 위쪽 script에서 해석 안된 아래쪽 script는 호출 불가) -->
+
+  <!-- Daum 주소 API -->
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+  <script src="/js/member/signup.js"></script>
 </body>
-</html>!
+</html>
