@@ -1,5 +1,7 @@
 package edu.kh.project.member.model.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import edu.kh.project.member.model.dto.Member;
@@ -30,4 +32,11 @@ public interface MemberMapper {
 	 * @return count
 	 */
 	public int checkNickname(String memberNickname);
+
+	/** 회원 목록 조회
+	 * @return
+	 */
+	public List<Member> selectMemberList();
+
+
 }

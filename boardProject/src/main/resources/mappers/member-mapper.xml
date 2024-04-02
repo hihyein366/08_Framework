@@ -59,5 +59,11 @@
 		WHERE MEMBER_DEL_FL = 'N'
 		AND MEMBER_NICKNAME = #{memberNickname}
  	</select>
+ 	
+ 	<!-- 회원조회 -->
+ 	<select id="selectMemberList">
+ 		SELECT MEMBER_NO, MEMBER_EMAIL, MEMBER_NICKNAME, MEMBER_DEL_FL
+ 		FROM "MEMBER"
+ 	</select>
 
 </mapper>

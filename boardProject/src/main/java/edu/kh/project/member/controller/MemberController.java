@@ -1,10 +1,11 @@
 package edu.kh.project.member.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -198,7 +199,40 @@ public class MemberController {
 		return service.checkNickname(memberNickname);
 	}
 	
+	/** 빠른 로그인
+	 * @param memberEmail
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("quickLogin")
+	public String quickLogin(
+		@RequestParam("memberEmail") String memberEmail,
+		Model model,
+		RedirectAttributes ra) {
+		Member loginMember = service.quickLogin(memberEmail);
+		
+		if(loginMember == null) {
+			ra.addFlashAttribute("message", "해당 이메일 회원 존재하지 않습니다");
+		} else {
+			model.addAttribute("loginMember", loginMember);
+		}
+		
+		return "redirect:/";
+	}
 	
+	/** 회원 조회
+	 * @param memberEmail
+	 * @param model
+	 * @param ra
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("selectMemberList")
+	public List<Member> selectMemberList() {
+		List<Member> memberList = service.selectMemberList();
+
+		return memberList;
+	}
 	
 }
 

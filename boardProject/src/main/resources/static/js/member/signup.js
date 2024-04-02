@@ -54,6 +54,10 @@ const emailMessage = document.querySelector("#emailMessage");
 // 2) 이메일이 입력(input 이벤트) 될 때마다 유효성 검사 수행
 memberEmail.addEventListener("input", e => {
 
+    // 이메일 인증 후 이메일이 변경된 경우
+    checkObj.authKey = false;
+    document.querySelector("#authKeyMessage").innerText = "";
+
     // 작성된 이메일 값 얻어오기
     const inputEmail = e.target.value;
 
@@ -288,7 +292,13 @@ memberTel.addEventListener("input", e => {
 
 const sendAuthKeyBtn = document.querySelector("#sendAuthKeyBtn"); // 인증번호 받기 버튼
 const authKey = document.querySelector("#authKey"); // 인증번호 입력  input
+
+// 인증번호 입력 후 확인하는 버튼
+const checkAuthKeyBtn = document.querySelector("#checkAuthKeyBtn"); 
+
 const authKeyMessage = document.querySelector("#authKeyMessage"); // 인증번호 관련 메시지 span 태그
+
+
 
 let authTimer; // 타이머 역할 할 setInterval 저장할 변수
 
@@ -302,7 +312,11 @@ let min = initMin;
 let sec = initSec;
 
 // 인증번호 받기 버튼 클릭 시
-sendAuthKeyBtn.addEventListener("click", e => {
+sendAuthKeyBtn.addEventListener("click", () => {
+
+    checkObj.authKey = false;
+    document.querySelector("#authKeyMessage").innerText = "";
+
 
     // 중복되지 않은 유효한 이메일을 입력한 경우가 아니면
     if (!checkObj.memberEmail) {
@@ -404,6 +418,7 @@ signUpForm.addEventListener("submit", e => {
             switch(key){
 
                 case "memberEmail": str = "이메일이 유효하지 않습니다."; break;
+                case "authKey" : str = "이메일이 인증되지 않았습니다."; break;
                 case "memberPw": str = "비밀번호가 유효하지 않습니다."; break;
                 case "memberPwConfirm": str = "비밀번호가 일치하지 않습니다."; break;
                 case "memberNickname": str = "닉네임이 유효하지 않습니다."; break;
@@ -419,5 +434,53 @@ signUpForm.addEventListener("submit", e => {
         }
 
     }
+
+});
+
+
+// --------------------------------------------------------------------------
+
+// 인증하기 버튼 클릭 시 입력된 인증번호 비동기로 서버에 전달
+// -> 입력된 인증번호와 발급된 거 같은지 비교. 같음 1 아니면 0 반환
+// 단, 타이머가 00:00초 아닐 경우에만 수행
+checkAuthKeyBtn.addEventListener("click", () => {
+    if(min === 0 && sec === 0){
+        alert("인증번호 제한시간을 초과하였습니다.");
+        return;
+    }
+
+    if(authKey.value.length < 6){ // 인증번호 제대로 입력 안된 경우
+        alert("인증번호 정확히 입력해라");
+        return;
+    }
+
+    // 입력 받은 이메일, 인증번호로 객체 생성
+    const obj = {
+        "email" : memberEmail.value,
+        "authKey" : authKey.value
+    };
+
+    fetch("/email/checkAuthKey", {
+        method : "POST",
+        headers : {"Content-Type" : "application/json"},
+        body : JSON.stringify(obj)  // obj를 JSON 변경
+    })
+    .then(resp => resp.text())
+    .then(result => {
+        if(result == 0){
+            alert("인증번호가 일치하지 않습니다");
+            checkObj.authKey = false;
+            return;
+        } 
+
+        clearInterval(authTimer); // 타이머 멈춤
+
+        authKeyMessage.innerText = "인증완료";
+        authKeyMessage.classList.remove("error");
+        authKeyMessage.classList.add("confirm");
+
+        checkObj.authKey = true; // 인증번호 검사여부 true로 
+        
+    })
 
 });
