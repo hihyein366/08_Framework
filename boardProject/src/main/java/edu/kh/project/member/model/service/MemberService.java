@@ -38,7 +38,7 @@ public interface MemberService {
 	Member quickLogin(String memberEmail);
 
 	/** 회원 목록조회
-	 * @return
+	 * @return memberList
 	 */
 	List<Member> selectMemberList();
 

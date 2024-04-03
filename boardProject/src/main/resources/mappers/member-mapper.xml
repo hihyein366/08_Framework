@@ -60,7 +60,11 @@
 		AND MEMBER_NICKNAME = #{memberNickname}
  	</select>
  	
- 	<!-- 회원조회 -->
+ 	<!-- 회원 목록 조회 -->
+	<!-- 
+		resultType 작성 시 한 행의 결과를 저장할 
+		자료형(int, double, String 등), Map, DTO를 작성
+	 --> 	
  	<select id="selectMemberList">
  		SELECT MEMBER_NO, MEMBER_EMAIL, MEMBER_NICKNAME, MEMBER_DEL_FL
  		FROM "MEMBER"
