@@ -161,6 +161,87 @@ selectMemberList.addEventListener("click", () => {
         //     }
         //     tbody.appendChild(tr);
         // }
-   
+});
+
+
+// ------------------------------------------------------------
+
+const resetMemberNo = document.querySelector("#resetMemberNo");
+const resetPw = document.querySelector("#resetPw");
+
+resetPw.addEventListener("click", () => {
+
+    // 입력 받은 회원 번호 얻어오기
+    const inputNo = resetMemberNo.value;
+
+    if(inputNo.trim().length == 0) {
+        alert("회원번호 입력해");
+        return;
+    }
+
+    fetch("/resetPw", {
+        method : "PUT", // PUT : 수정 요청 방식
+        headers : {"Content-Type" : "application/json"},
+        body : inputNo
+    })
+    .then(resp => resp.text())
+    .then(result => { // resp.text 가 result 임!
+        // result == 컨트롤러로 부터 반환받아 TEXT로 파싱한 값
+
+        if(result > 0 ) alert("초기화 성공");
+        else alert("해당 회원 존재하지 않습니다");
+    });
 
 });
+
+const restoreMemberNo = document.querySelector("#restoreMemberNo");
+const restore = document.querySelector("#restore");
+
+restore.addEventListener("click", () => {
+
+    const inputNo = restoreMemberNo.value;
+
+    if(inputNo.trim().length == 0) {
+        alert("회원번호를 입력하세요");
+        return;
+    }
+
+    fetch("/restore", {
+        method : "PUT",
+        headers : {"Content-Type" : "application/json"},
+        body : inputNo
+    })
+    .then(resp => resp.text())
+    .then(result => {
+        if(result > 0) alert ("복구가 되었습니다");
+        else alert ("해당 번호 회원 존재하지 않습니다");
+    });
+
+});
+
+const delMemberNo = document.querySelector("#delMemberNo");
+const delMember = document.querySelector("#delMember");
+
+delMember.addEventListener("click", () => {
+    const inputNo = delMemberNo.value;
+
+    if(inputNo.trim().length == 0) {
+        alert("회원 번호 입력하세요");
+        return;
+    }
+
+    fetch("/delMember", {
+        method : "PUT",
+        headers : {"Content-Type" : "application/json"},
+        body : inputNo
+    })
+    .then(resp => resp.text())
+    .then(result => {
+        if(result > 0) {
+            alert ("계정이 영구 삭제 되었습니다");
+            delMemberNo = "";
+        }
+        else alert ("존재하지 않는 회원번호 입니다");
+    });
+});
+

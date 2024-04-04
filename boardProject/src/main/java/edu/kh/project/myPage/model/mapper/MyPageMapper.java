@@ -21,5 +21,11 @@ public interface MyPageMapper {
 	 * @param memberNo
 	 * @return
 	 */
-	String selectPw(int memberNo); 
+	String selectPw(int memberNo);
+
+	/** 회원 탈퇴
+	 * @param memberNo
+	 * @return
+	 */
+	int secession(int memberNo); 
 }
