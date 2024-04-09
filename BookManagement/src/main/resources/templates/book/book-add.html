@@ -10,18 +10,23 @@
     <h1>책 등록</h1>
     <br>
 
-    <form action="/book/add" method="POST" name="bookAddForm" id="bookAddForm">
+    <form action="/book/add" method="POST">
 
-        제목 : <input type="text" id="bookTitle"><br>
-        글쓴이 : <input type="text" id="bookWriter"><br>
-        가격 : <input type="number" id="bookPrice"> <br>
+        제목 : <input type="text" name="bookTitle"><br>
+        글쓴이 : <input type="text" name="bookWriter"><br>
+        가격 : <input type="number" name="bookPrice"> <br>
 
-        <button id="addBtn">등록하기</button>
+        <button>등록하기</button>
 
     </form>
 
+    <!-- <th:block th:replace="~{book/message}"></th:block> -->
     
+    <script th:inline="javascript">
+        const message =  /*[[${message}]]*/ "전달 받은 message";
+      
+        if(message != null) alert(message);
+    </script>
 
-    <script src="/js/book/add.js"></script>
 </body>
 </html>

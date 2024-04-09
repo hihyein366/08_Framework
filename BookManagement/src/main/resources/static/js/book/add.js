@@ -45,9 +45,10 @@ addBtn.addEventListener("click", () => {
 
     .then(resp => resp.text())
 
-    .then(temp => {
-        if(temp > 0) {
-            alert("등록 성공");
+    .then(result => {
+        if(result > 0) {
+            alert("등록 성공공");
+            bookTitle = "";
         } else {
             alert("등록 실패");
         }

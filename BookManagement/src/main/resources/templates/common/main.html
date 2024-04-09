@@ -9,14 +9,14 @@
     <h1>책 관리 프로그램</h1>
     
     <a href="/book/add">책 등록</a> <br><br>
-    <a href="#">책 검색, 수정, 삭제</a>
+    <a href="/book/update">책 검색, 수정, 삭제</a>
     <br><br>
 
     <hr>
 
     <h2>
         모든 책 조회
-        <button id="selectBookList">조회</button> 
+        <button id="selectAll">조회</button> 
     </h2>
 
     <table border="1" style="border-collapse: collapse;">
@@ -28,7 +28,7 @@
             <th>등록일</th>
         </thead>
 
-        <tbody id="bookList"></tbody>
+        <tbody id="tbody"></tbody>
         
     </table>
 

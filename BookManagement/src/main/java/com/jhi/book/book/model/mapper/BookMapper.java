@@ -20,4 +20,6 @@ public interface BookMapper {
 	 */
 	int addBook(Book book);
 
+	public List<Book> selectAll();
+
 }

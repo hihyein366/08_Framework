@@ -1,6 +1,7 @@
 package com.jhi.book.book.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jhi.book.book.model.dto.Book;
 
@@ -19,6 +20,10 @@ public interface BookService {
 	 * @param bookPrice
 	 * @return
 	 */
-	int add(String bookTitle, String bookWriter, int bookPrice);
+	int addBook(String bookTitle, String bookWriter, int bookPrice);
+
+
+
+	Map<String, Object> selectAll();
 
 }
