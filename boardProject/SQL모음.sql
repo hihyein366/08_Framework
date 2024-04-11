@@ -369,6 +369,45 @@ ALTER TABLE "COMMENT" ADD
 CONSTRAINT "COMMENT_DEL_CHECK"
 CHECK("COMMENT_DEL_FL" IN ('Y', 'N'));
 
+/* 게시판 종류(BOARD_TYPE) 추가 */
+CREATE SEQUENCE SEQ_BOARD_CODE NOCACHE;
+
+INSERT INTO BOARD_TYPE VALUES(SEQ_BOARD_CODE.NEXTVAL, '공지 게시판');
+INSERT INTO BOARD_TYPE VALUES(SEQ_BOARD_CODE.NEXTVAL, '정보 게시판');
+INSERT INTO BOARD_TYPE VALUES(SEQ_BOARD_CODE.NEXTVAL, '자유 게시판');
+
+-- 게시판 종류 조회 (표기법 다르게)
+SELECT * FROM BOARD_TYPE ORDER BY BOARD_CODE ;
+
+
+/* 게시글 번호 시퀀스 생성 */
+CREATE SEQUENCE SEQ_BOARD_NO NOCACHE;
+
+/* 게시판(BOARD) 테이블 샘플 데이터 삽입(PL/SQL) */
+
+-- DBMS_RANDOM.VALUE(0,3) : 0.0 이상, 3.0 미만의 난수
+-- CEIL : 올림처리, 1 2 3 중 하나만 나옴
+
+-- ALT X 로 실행하기
+BEGIN
+	
+	FOR I IN 1..2000 LOOP
+		
+		INSERT INTO BOARD 
+		VALUES(SEQ_BOARD_NO.NEXTVAL,
+					 SEQ_BOARD_NO.CURRVAL || '번째 게시글',
+					 SEQ_BOARD_NO.CURRVAL || '번째 게시글 내용',
+					 DEFAULT, DEFAULT, DEFAULT, DEFAULT,
+					 CEIL( DBMS_RANDOM.VALUE(0,3) ),
+					 7
+	  );
+		
+	END LOOP;
+
+END;
+
+-- 게시판 종류별 샘플 데이터 삽입 확인
+SELECT COUNT(*) FROM BOARD GROUP BY BOARD_CODE;
 
 --------------------------------------------------------------------------------------------------------------
 /* 책 관리 프로젝트 (연습용) */
