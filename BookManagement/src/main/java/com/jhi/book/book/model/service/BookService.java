@@ -24,6 +24,17 @@ public interface BookService {
 
 
 
+	/** 검조수하는 곳에서 조회
+	 * @return
+	 */
 	Map<String, Object> selectAll();
+
+
+
+	/** 삭제하기
+	 * @param bookNo
+	 * @return
+	 */
+	int deleteBook(int bookNo);
 
 }

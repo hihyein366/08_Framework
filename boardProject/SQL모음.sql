@@ -405,10 +405,174 @@ BEGIN
 	END LOOP;
 
 END;
-
+;
 -- 게시판 종류별 샘플 데이터 삽입 확인
 SELECT COUNT(*) FROM BOARD GROUP BY BOARD_CODE;
 
+
+---------------------------------------------------------------
+/* 댓글 번호 시퀀스 생성 */
+CREATE SEQUENCE SEQ_COMMENT_NO NOCACHE;
+
+-- 부모 댓글 번호 NULL 허용으로 변경
+ALTER TABLE "COMMENT" MODIFY PARENT_COMMENT_NO NUMBER NULL;
+
+/* 댓글 ("COMMENT") 테이블에 샘플 데이터 추가 */
+BEGIN
+	FOR I IN 1..2000 LOOP
+		INSERT INTO "COMMENT" 
+		VALUES(
+			SEQ_COMMENT_NO.NEXTVAL,
+			SEQ_COMMENT_NO.CURRVAL || '번째 댓글 입니다',
+			DEFAULT, DEFAULT,
+			CEIL(DBMS_RANDOM.VALUE(0,2000)),
+			7,
+			NULL
+		);
+	END LOOP;
+END;
+;
+
+-- 게시글 번호 최소값, 최대값
+SELECT MIN(BOARD_NO), MAX(BOARD_NO) FROM BOARD;
+
+-- 댓글 삽입 확인
+SELECT COUNT(*) FROM "COMMENT" GROUP BY BOARD_NO;
+
+--------------------------------------------------------
+/* 특정 게시판(BOARD_CODE)에 삭제되지 않은 게시글 목록 조회
+ * 단, 최신글이 제일 위에 존재 / 몇 초/분/시간 전 또는 YYYY-MM-DD 형식으로 작성일 조회
+ * 
+ * + 댓글 개수
+ * + 좋아요 개수 */
+
+-- 번호 / 제목[댓글개수] / 작성자닉네임 / 조회수 / 좋아요 개수 / 작성일
+
+-- 상관 서브 쿼리
+-- 1) 메인 쿼리 1행 조회
+-- 2) 1행 조회 결과를 이용해서 서브쿼리 수행
+--		(메인쿼리 모두 조회할 때까지 반복)
+SELECT BOARD_NO, BOARD_TITLE, MEMBER_NICKNAME, READ_COUNT,
+	(SELECT COUNT(*) FROM "COMMENT" C
+	 WHERE C.BOARD_NO = B.BOARD_NO) COMMENT_COUNT,
+	 
+	(SELECT COUNT(*) FROM "BOARD_LIKE" L
+	 WHERE L.BOARD_NO = B.BOARD_NO) LIKE_COUNT,
+	 
+	 CASE 
+		 WHEN SYSDATE - BOARD_WRITE_DATE < 1 / 24 / 60
+	   THEN FLOOR((SYSDATE - BOARD_WRITE_DATE) * 24 * 60 * 60) || '초 전'
+	   
+	   WHEN SYSDATE - BOARD_WRITE_DATE < 1 / 24 
+	   THEN FLOOR((SYSDATE - BOARD_WRITE_DATE) * 24 * 60) || '분 전'
+	   
+	   WHEN SYSDATE - BOARD_WRITE_DATE < 1 
+	   THEN FLOOR((SYSDATE - BOARD_WRITE_DATE) * 24) || '시간 전'
+	   
+	   ELSE TO_CHAR(BOARD_WRITE_DATE, 'YYYY-MM-DD')
+	 END BOARD_WRITE_DATE
+	 
+FROM BOARD B
+JOIN MEMBER USING(MEMBER_NO)
+WHERE BOARD_DEL_FL = 'N'
+AND BOARD_CODE = 1
+ORDER BY BOARD_NO DESC;
+
+
+-- 특정 게시글의 댓글 개수 조회
+SELECT COUNT(*) FROM "COMMENT"
+WHERE BOARD_NO = 1999;
+
+-- 현재 시간 - 하루전 --> 정수 부분 == 일 단위
+SELECT (SYSDATE 
+	- TO_DATE('2024-04-10 12:14:30', 'YYYY-MM-DD HH24:MI:SS'))*60 *60 *24
+FROM DUAL;
+
+
+-- 지정된 게시판(boardCode)에서 삭제되지 않은 게시글 수를 조회
+SELECT COUNT(*) 
+FROM BOARD 
+WHERE BOARD_DEL_FL = 'N'
+AND BOARD_CODE = 1;
+
+-------------------------------------------------------------
+/* BOARD_IMG 테이블용 시퀀스 생성 */
+CREATE SEQUENCE SEQ_IMG_NO NOCACHE;
+
+/* BOARD_IMG 테이블에 샘플 데이터 삽입 */
+INSERT INTO "BOARD_IMG" VALUES(
+	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본1.jpg', 'test1.jpg', 0, 2001);
+INSERT INTO "BOARD_IMG" VALUES(
+	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본2.jpg', 'test2.jpg', 1, 2001);
+INSERT INTO "BOARD_IMG" VALUES(
+	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본3.jpg', 'test3.jpg', 2, 2001);
+INSERT INTO "BOARD_IMG" VALUES(
+	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본4.jpg', 'test4.jpg', 3, 2001);
+INSERT INTO "BOARD_IMG" VALUES(
+	SEQ_IMG_NO.NEXTVAL, '/images/board/', '원본5.jpg', 'test5.jpg', 4, 2001);
+
+-------------------------------------------------------------
+/* 게시글 상세 조회 */
+SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, BOARD_CODE, READ_COUNT, 
+	MEMBER_NO, MEMBER_NICKNAME, PROFILE_IMG,
+	
+	TO_CHAR(BOARD_WRITE_DATE, 'YYYY"년" MM"월" DD"일" HH24:MI:SS') BOARD_WRITE_DATE,
+	TO_CHAR(BOARD_UPDATE_DATE, 'YYYY"년" MM"월" DD"일" HH24:MI:SS') BOARD_UPDATE_DATE,
+	
+	(SELECT COUNT(*) FROM "BOARD_LIKE" WHERE BOARD_NO = 2001) LIKE_COUNT,
+	
+	(SELECT IMG_PATH || IMG_RENAME
+	 FROM "BOARD_IMG"
+	 WHERE BOARD_NO = 2001
+	 AND IMG_ORDER = 0) THUMBNAIL
+	
+FROM "BOARD"
+JOIN "MEMBER" USING(MEMBER_NO)
+WHERE BOARD_DEL_FL = 'N'
+AND BOARD_CODE = 1
+AND BOARD_NO = 2001;
+
+
+--------------
+/* 상세조회 되는 게시글의 모든 이미지 조회 */
+SELECT * 
+FROM "BOARD_IMG"
+WHERE BOARD_NO = 2001
+ORDER BY IMG_ORDER;
+
+/* 상세조회 되는 게시글의 모든 댓글 조회 */
+
+/* 계층형 쿼리
+ * 
+ * 
+ */
+SELECT LEVEL, C.* FROM
+	(SELECT COMMENT_NO, COMMENT_CONTENT,
+	 	TO_CHAR(COMMENT_WRITE_DATE, 'YYYY"년" MM"월" DD"일" HH24"시" MI"분" SS"초"') COMMENT_WRITE_DATE,
+		BOARD_NO, MEMBER_NO, MEMBER_NICKNAME, PROFILE_IMG, PARENT_COMMENT_NO, COMMENT_DEL_FL
+	FROM "COMMENT"
+	JOIN MEMBER USING(MEMBER_NO)
+	WHERE BOARD_NO = 1998) C
+
+WHERE COMMENT_DEL_FL = 'N'
+OR 0 != (SELECT COUNT(*) FROM "COMMENT" SUB
+					WHERE SUB.PARENT_COMMENT_NO = C.COMMENT_NO
+					AND COMMENT_DEL_FL = 'N')
+START WITH PARENT_COMMENT_NO IS NULL
+CONNECT BY PRIOR COMMENT_NO = PARENT_COMMENT_NO
+ORDER SIBLINGS BY COMMENT_NO;
+
+
+
+
+
+
+
+
+
+
+
+COMMIT;
 --------------------------------------------------------------------------------------------------------------
 /* 책 관리 프로젝트 (연습용) */
 

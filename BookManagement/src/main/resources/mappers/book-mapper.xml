@@ -16,11 +16,17 @@
 		VALUES(SEQ_BOOK_NO.NEXTVAL, #{bookTitle}, #{bookWriter}, #{bookPrice}, DEFAULT)
 	</insert>
 
-	<!-- 자동으로 뜨기 -->
+	<!-- 검색 -->
 	<select id="selectAll">
 		SELECT BOOK_NO, BOOK_TITLE, BOOK_WRITER, BOOK_PRICE, REG_DATE
 		FROM "BOOK"
 		ORDER BY BOOK_NO
 	</select>
+	
+	<!-- 삭제 -->
+	<delete id="deleteBook">
+		DELETE FROM BOOK
+		WHERE BOOK_NO = #{bookNo}
+	</delete>
 
 </mapper>

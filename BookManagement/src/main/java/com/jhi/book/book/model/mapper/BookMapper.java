@@ -22,4 +22,6 @@ public interface BookMapper {
 
 	public List<Book> selectAll();
 
+	public int deleteBook(int bookNo);
+
 }
