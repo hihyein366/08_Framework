@@ -23,14 +23,14 @@
             <h1 class="board-name" th:text="${boardName}">게시판 이름</h1>
 
             <!-- applivation, request scope 값 이용 방법 -->
-            <th:block th:each="boardType : ${application.boardTypeList}">
+            <!-- <th:block th:each="boardType : ${application.boardTypeList}">
                 <h1 class="board-name" 
                     th:if="${boardType.boardCode} == ${boardCode}"
                     th:text="${boardType.boardName}">
                     게시판 이름
                 </h1>
 
-            </th:block>
+            </th:block> -->
 
             <!-- 검색 구현 후 사용 -->
             <!-- <h3 style="margin:30px">OOO 검색 결과</h3> -->
