@@ -62,3 +62,21 @@ boardLike.addEventListener("click", e => {
 });
 
 
+
+// GET 방식 삭제
+const deleteBtn = document.querySelector("#deleteBtn");
+
+if(deleteBtn != null) { 
+    deleteBtn.addEventListener ('click', e => {
+    
+        if(confirm("삭제 하시겠습니까?")){
+            location.href = `/editBoard/${boardCode}/${boardNo}/delete`;
+        } else {
+            alert("취소됨");
+            return;
+        }
+        
+    })
+}
+
+
