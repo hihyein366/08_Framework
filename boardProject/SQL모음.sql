@@ -622,6 +622,84 @@ ROLLBACK;
 
 
 COMMIT;
+
+
+
+INSERT INTO "COMMENT" 
+VALUES(SEQ_COMMENT_NO.NEXTVAL, '부모 댓글 1',
+			DEFAULT, DEFAULT, 2011, 19, NULL);
+		
+INSERT INTO "COMMENT" 
+VALUES(SEQ_COMMENT_NO.NEXTVAL, '부모 댓글 2',
+			DEFAULT, DEFAULT, 2011, 19, NULL);
+		
+INSERT INTO "COMMENT" 
+VALUES(SEQ_COMMENT_NO.NEXTVAL, '부모 댓글 3',
+			DEFAULT, DEFAULT, 2011, 19, NULL);
+		
+-- 부모 댓글 1의 자식 댓글
+INSERT INTO "COMMENT" 
+VALUES(SEQ_COMMENT_NO.NEXTVAL, '부모1의 자식 1',
+			DEFAULT, DEFAULT, 2011, 19, 2001);
+		
+INSERT INTO "COMMENT" 
+VALUES(SEQ_COMMENT_NO.NEXTVAL, '부모1의 자식 2',
+			DEFAULT, DEFAULT, 2011, 19, 2001);
+		
+-- 부모 댓글 2의 자식 댓글
+INSERT INTO "COMMENT" 
+VALUES(SEQ_COMMENT_NO.NEXTVAL, '부모1의 자식 2',
+			DEFAULT, DEFAULT, 2011, 8, 2002);
+		
+
+INSERT INTO "COMMENT" 
+VALUES(SEQ_COMMENT_NO.NEXTVAL, '부모2의 손자 1',
+			DEFAULT, DEFAULT, 2011, 8, 2006);
+		
+
+
+
+SELECT LEVEL, COMMENT_NO, PARENT_COMMENT_NO, COMMENT_CONTENT  
+FROM "COMMENT" 
+WHERE BOARD_NO = 2011
+
+
+/*계층형 쿼리*/
+-- PARENT_COMMENT_NO 값이 NULL인 행이 부모(LV.1)
+START WITH PARENT_COMMENT_NO IS NULL 
+
+-- 부모의 COMMENT_NO와 같은 PARENT_COMMENT_NO 가진 행을 자식으로 지정
+CONNECT BY PRIOR COMMENT_NO = PARENT_COMMENT_NO
+
+-- 형제(같은 레벨 부모, 자식)들 간의 정렬 순서를 COMMENT_NO 오름 차순
+ORDER SIBLINGS BY COMMENT_NO;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --------------------------------------------------------------------------------------------------------------
 /* 책 관리 프로젝트 (연습용) */
 
