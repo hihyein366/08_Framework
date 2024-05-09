@@ -18,7 +18,7 @@ if(insertBtn != null) {
 /* 검색 관련된 요소 */
 const searchKey = document.querySelector("#searchKey");
 const searchQuery = document.querySelector("#searchQuery");
-const options = document.querySelectorAll("#searchKey > option");
+const options = document.querySe = lectorAll("#searchKey > option");
 
 // 검색창에 이전 검색 기록을 남겨놓기
 
